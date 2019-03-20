@@ -22,6 +22,8 @@ def convert_ethernet_address(data):
 
 def parsing_ip_header(data):
   ip_header = struct.unpack("!1c1c2s2s2s1c1c2s4c4c", data)
+  slicing = bin(int(ip_header[4].hex(), 16))
+  slicing_flags = slicing[2:18]
   print("------------------------------------------------------")
   print("=====ip header=====")
   print("| ip_version ->",  int(ip_header[0].hex()[0], 16))
@@ -30,12 +32,12 @@ def parsing_ip_header(data):
   print("| explicit_services_codepoint ->",  ip_header[1].hex()[1])
   print("| total_length ->", int(ip_header[2].hex(), 16))
   print("| identification ->", int(ip_header[3].hex(), 16))
-  print("| flags ->", "0x" + ip_header[4].hex())
+  print("| flags ->", int(slicing_flags[0:3], 2))
   ##
-  print("| >> reserved_bit ->", ip_header[4].hex()[0])
-  print("| >> dont_fragment ->", ip_header[4].hex()[1])
-  print("| >> more_fragments ->", ip_header[4].hex()[2])
-  print("| >> fragments_offset ->", ip_header[4].hex()[3])
+  print("| >> reserved_bit ->", int(slicing_flags[3], 2))
+  print("| >> dont_fragment ->", int(slicing_flags[4], 2))
+  print("| >> more_fragments ->", int(slicing_flags[5], 2))
+  print("| >> fragments_offset ->", int(slicing_flags[3:16], 2))
   ##
   print("| timetolive ->", int(ip_header[5].hex(), 16))
   print("| protocol ->", int(ip_header[6].hex(), 16))
